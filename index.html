@@ -420,10 +420,11 @@ footer{max-width:1280px;margin:50px auto 0;padding:16px 28px;color:var(--muted);
       <div class="cap">Not yet closed</div>
       <div class="chartwrap"><canvas id="chartADistrict"></canvas></div>
     </div>
-    <div class="card narrow">
+
+    <div class="card wide">
       <h3>Source category</h3>
-      <div class="cap">Where issues originate</div>
-      <div class="chartwrap"><canvas id="chartASource"></canvas></div>
+      <div class="cap">Where issues originate &mdash; sorted by volume</div>
+      <div class="chartwrap tall"><canvas id="chartASource"></canvas></div>
     </div>
 
     <div class="card wide">
@@ -736,6 +737,10 @@ function renderSectionB(){
 
   const bySrc = countBy(rows,'Source Category');
   const srcKeys = [...bySrc.keys()].sort((a,b)=>bySrc.get(b)-bySrc.get(a));
+  // Give each bar enough vertical room so long category labels (e.g. "Governance/
+  // Program Management /Review Meetings") aren't clipped.
+  const srcChartHeight = Math.max(220, srcKeys.length*32+40);
+  document.getElementById('chartASource').parentElement.style.height = srcChartHeight+'px';
   upsertChart('chartASource', {
     type:'bar',
     data:{labels:srcKeys, datasets:[{data:srcKeys.map(s=>bySrc.get(s)), backgroundColor:srcKeys.map((_,i)=>colorAt(i+3)), datalabels: DL_END}]},
